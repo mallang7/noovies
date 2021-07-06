@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-import {AppLoading} from 'expo';
+import { AppLoading } from 'expo';
 import { StyleSheet, Text, View } from 'react-native';
 
 
