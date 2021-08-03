@@ -1,8 +1,11 @@
-import { StatusBar } from 'expo-status-bar';
 import React, { useState } from 'react';
-import { AppLoading } from 'expo-app-loading';
-import { ImageStore, StyleSheet, Text, View, Image } from 'react-native';
+import { AppLoading } from 'expo';
+import * as Font from "expo-font";
+import { Image } from 'react-native';
+import { NavigationContatiner } from "@react-navigation/native";
+import { Asset } from "expo-asset";
 import { Ionicons } from '@expo/vector-icons';
+import Stack from './navigation/Stack';
 
 const cacheImages = (images) => images.map(image => {
   if (typeof image === "string"){
@@ -10,18 +13,28 @@ const cacheImages = (images) => images.map(image => {
   } else {
     return Asset.fromModule(image).downloadAsync();
   }
-})
+});
+
+const cacheFonts = fonts => 
+  fonts.map(font => [Font.loadAsync(font),Font.loadAsync(font)]);
 
 export default function App() {
   const [isReady, setIsReady] = useState(false);
-  const loadAssets = async () => {
+  const loadAssets = () => {
     const images = cacheImages(["https://unsplash.com/photos/D00DEMhNptA",
-  require("./assets/splash.png")])
+    require("./assets/splash.png")]);
+  const fonts = cacheFonts([Ionicons.font]);
+  return Promise.all([...images, ...fonts]);
   };
+
   const onFinish = () => setIsReady(true);
-  return isReady ? null : (
+  return isReady ? (
+    <NavigationContatiner>
+      <Stack />
+    </NavigationContatiner>
+  ) : (
   <AppLoading 
-  startAsync={loadAssets} 
-  onFinish={onFinish} 
-  onError={console.error} />);
+    startAsync={loadAssets}
+    onFinish={onFinish}
+    onError={console.error} />);
 }
